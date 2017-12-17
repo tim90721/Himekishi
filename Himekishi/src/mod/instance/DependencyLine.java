@@ -3,6 +3,7 @@ package mod.instance;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 
@@ -27,6 +28,8 @@ public class DependencyLine extends JPanel implements IFuncComponent,
 	boolean isSelect = false;
 	int selectBoxSize = 5;
 	CanvasPanelHandler cph;
+	private double _angle;
+	private int _rotateX, _rotateY;
 
 	public DependencyLine(CanvasPanelHandler cph) {
 		this.setOpaque(false);
@@ -44,12 +47,41 @@ public class DependencyLine extends JPanel implements IFuncComponent,
 				- this.getLocation().y);
 		tpPrime = new Point(tp.x - this.getLocation().x, tp.y
 				- this.getLocation().y);
+		setAngle(tpPrime.x - fpPrime.x, tpPrime.y - fpPrime.y);
+		double distance = Math.sqrt(Math.pow(tpPrime.x - fpPrime.x, 2)
+				+ Math.pow(tpPrime.y - fpPrime.y, 2));
+		int length = (int)distance / 15;
+		int left = (int)distance % 15;
+		System.out.println(distance);
+		System.out.println(length);
+		System.out.println(left);
+		System.out.println(getAngle());
 		g.setColor(Color.BLACK);
-		g.drawLine(fpPrime.x, fpPrime.y, tpPrime.x, tpPrime.y);
+		Graphics2D g2 = (Graphics2D)g;
+		g2.rotate(getAngle(), fpPrime.x, fpPrime.y);
+		int i;
+		for(i = 0;i < length; i++) {
+			g2.drawLine(fpPrime.x + i * 15, fpPrime.y, 
+					fpPrime.x + i * 15 + 10, fpPrime.y);
+		}
+		if(left > 0) {
+			g2.drawLine(fpPrime.x + (length) * 15, fpPrime.y, 
+					fpPrime.x + (length) * 15 + (left % 10), fpPrime.y);
+		}
+//		g2.drawLine(fpPrime.x, fpPrime.y, fpPrime.x + (int)distance, fpPrime.y);
+		g2.rotate(-1 * getAngle(), fpPrime.x, fpPrime.y);
 		paintArrow(g, tpPrime);
 		if (isSelect == true) {
 			paintSelect(g);
 		}
+	}
+	
+	public void setAngle(int difX, int difY) {
+		_angle = Math.atan2(difY, difX);
+	}
+	
+	public double getAngle() {
+		return _angle;
 	}
 
 	@Override
