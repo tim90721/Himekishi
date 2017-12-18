@@ -110,6 +110,8 @@ public class CanvasPanelHandler extends PanelHandler
 	void selectByClick(MouseEvent e)
 	{
 		boolean isSelect = false;
+//		boolean isSelectPort = false;
+		Point clickPoint = new Point(e.getX(), e.getY());
 		selectComp = new Vector <>();
 		for (int i = 0; i < members.size(); i ++)
 		{
@@ -121,14 +123,16 @@ public class CanvasPanelHandler extends PanelHandler
 					case 0:
 						((BasicClass) members.elementAt(i)).setSelect(true);
 						selectComp.add(members.elementAt(i));
+						((BasicClass) members.elementAt(i)).isSelectPort(clickPoint);
 						isSelect = true;
 						break;
 					case 1:
 						((UseCase) members.elementAt(i)).setSelect(true);
 						selectComp.add(members.elementAt(i));
+						((UseCase) members.elementAt(i)).isSelectPort(clickPoint);
 						isSelect = true;
 						break;
-					case 5:
+					case 6:
 						Point p = e.getPoint();
 						p.x -= members.elementAt(i).getLocation().x;
 						p.y -= members.elementAt(i).getLocation().y;
@@ -522,6 +526,9 @@ public class CanvasPanelHandler extends PanelHandler
 				((GeneralizationLine) obj).setSelect(isSelect);
 				break;
 			case 5:
+				((DependencyLine) obj).setSelect(isSelect);
+				break;
+			case 6:
 				((GroupContainer) obj).setSelect(isSelect);
 				break;
 			default:

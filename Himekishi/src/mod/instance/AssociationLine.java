@@ -15,7 +15,7 @@ import mod.ILinePainter;
 import java.lang.Math;
 
 public class AssociationLine extends JPanel
-		implements IFuncComponent, ILinePainter
+		implements IFuncComponent, ILinePainter, IBasicLine
 {
 	JPanel				from;
 	int					fromSide;
@@ -47,6 +47,7 @@ public class AssociationLine extends JPanel
 				tp.y - this.getLocation().y);
 		g.drawLine(fpPrime.x, fpPrime.y, tpPrime.x, tpPrime.y);
 		paintArrow(g, tpPrime);
+//		isSelect = true;
 		if (isSelect == true)
 		{
 			paintSelect(g);
@@ -133,9 +134,15 @@ public class AssociationLine extends JPanel
 	@Override
 	public void paintSelect(Graphics gra)
 	{
+		Point fpPrime;
+		Point tpPrime;
+		fpPrime = new Point(fp.x - this.getLocation().x,
+				fp.y - this.getLocation().y);
+		tpPrime = new Point(tp.x - this.getLocation().x,
+				tp.y - this.getLocation().y);
 		gra.setColor(Color.BLACK);
-		gra.fillRect(fp.x, fp.y, selectBoxSize, selectBoxSize);
-		gra.fillRect(tp.x, tp.y, selectBoxSize, selectBoxSize);
+		gra.fillRect(fpPrime.x, fpPrime.y, selectBoxSize, selectBoxSize);
+		gra.fillRect(tpPrime.x, tpPrime.y, selectBoxSize, selectBoxSize);
 	}
 
 	public boolean isSelect()
@@ -146,5 +153,10 @@ public class AssociationLine extends JPanel
 	public void setSelect(boolean isSelect)
 	{
 		this.isSelect = isSelect;
+	}
+
+	@Override
+	public void drawPort(Graphics g) {
+		paintSelect(g);
 	}
 }

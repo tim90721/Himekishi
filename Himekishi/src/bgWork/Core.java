@@ -150,9 +150,12 @@ public class Core extends InitProcess
 		{
 			return 4;
 		}
+		else if (isDepencyLine(obj)){
+			return 5;
+		}
 		else if (isGroupContainer(obj))
 		{
-			return 5;
+			return 6;
 		}
 		return -1;
 	}

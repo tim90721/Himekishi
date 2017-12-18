@@ -50,36 +50,37 @@ public class DependencyLine extends JPanel implements IFuncComponent,
 		setAngle(tpPrime.x - fpPrime.x, tpPrime.y - fpPrime.y);
 		double distance = Math.sqrt(Math.pow(tpPrime.x - fpPrime.x, 2)
 				+ Math.pow(tpPrime.y - fpPrime.y, 2));
-		int length = (int)distance / 15;
-		int left = (int)distance % 15;
+		int length = (int) distance / 15;
+		int left = (int) distance % 15;
 		System.out.println(distance);
 		System.out.println(length);
 		System.out.println(left);
 		System.out.println(getAngle());
 		g.setColor(Color.BLACK);
-		Graphics2D g2 = (Graphics2D)g;
+		Graphics2D g2 = (Graphics2D) g;
 		g2.rotate(getAngle(), fpPrime.x, fpPrime.y);
 		int i;
-		for(i = 0;i < length; i++) {
-			g2.drawLine(fpPrime.x + i * 15, fpPrime.y, 
-					fpPrime.x + i * 15 + 10, fpPrime.y);
+		for (i = 0; i < length; i++) {
+			g2.drawLine(fpPrime.x + i * 15, fpPrime.y, fpPrime.x + i * 15 + 10,
+					fpPrime.y);
 		}
-		if(left > 0) {
-			g2.drawLine(fpPrime.x + (length) * 15, fpPrime.y, 
-					fpPrime.x + (length) * 15 + (left % 10), fpPrime.y);
+		if (left > 0) {
+			g2.drawLine(fpPrime.x + (length) * 15, fpPrime.y, fpPrime.x
+					+ (length) * 15 + (left % 10), fpPrime.y);
 		}
-//		g2.drawLine(fpPrime.x, fpPrime.y, fpPrime.x + (int)distance, fpPrime.y);
+		// g2.drawLine(fpPrime.x, fpPrime.y, fpPrime.x + (int)distance,
+		// fpPrime.y);
 		g2.rotate(-1 * getAngle(), fpPrime.x, fpPrime.y);
 		paintArrow(g, tpPrime);
 		if (isSelect == true) {
 			paintSelect(g);
 		}
 	}
-	
+
 	public void setAngle(int difX, int difY) {
 		_angle = Math.atan2(difY, difX);
 	}
-	
+
 	public double getAngle() {
 		return _angle;
 	}
@@ -97,11 +98,43 @@ public class DependencyLine extends JPanel implements IFuncComponent,
 	public void paintArrow(Graphics g, Point point) {
 		int x[] = { point.x, point.x - arrowSize, point.x, point.x + arrowSize };
 		int y[] = { point.y + arrowSize, point.y, point.y - arrowSize, point.y };
+		switch (toSide) {
+		case 0:
+			x = removeAt(x, 0);
+			y = removeAt(y, 0);
+			break;
+		case 1:
+			x = removeAt(x, 1);
+			y = removeAt(y, 1);
+			break;
+		case 2:
+			x = removeAt(x, 3);
+			y = removeAt(y, 3);
+			break;
+		case 3:
+			x = removeAt(x, 2);
+			y = removeAt(y, 2);
+			break;
+		default:
+			break;
+		}
 		Polygon polygon = new Polygon(x, y, x.length);
-		g.setColor(Color.WHITE);
-		g.fillPolygon(polygon);
 		g.setColor(Color.BLACK);
-		g.drawPolygon(polygon);
+		g.fillPolygon(polygon);
+//		g.setColor(Color.BLACK);
+//		g.drawPolygon(polygon);
+	}
+
+	int[] removeAt(int arr[], int index) {
+		int temp[] = new int[arr.length - 1];
+		for (int i = 0; i < temp.length; i++) {
+			if (i < index) {
+				temp[i] = arr[i];
+			} else if (i >= index) {
+				temp[i] = arr[i + 1];
+			}
+		}
+		return temp;
 	}
 
 	@Override

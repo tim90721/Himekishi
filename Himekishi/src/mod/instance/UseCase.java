@@ -3,10 +3,15 @@ package mod.instance;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.JPanel;
 
+import Define.AreaDefine;
 import bgWork.handler.CanvasPanelHandler;
 import mod.IClassPainter;
 import mod.IFuncComponent;
@@ -19,6 +24,13 @@ public class UseCase extends JPanel implements IFuncComponent, IClassPainter
 	boolean				isSelect		= false;
 	int					selectBoxSize	= 5;
 	CanvasPanelHandler	cph;
+	private int selectPort = -1;
+	private boolean hasSelectPort = false;
+	ArrayList<IBasicLine> topLines;
+	ArrayList<IBasicLine> rightLines;
+	ArrayList<IBasicLine> leftLines;
+	ArrayList<IBasicLine> bottomLines;
+	Map<Integer, ArrayList<IBasicLine>> lines;
 
 	public UseCase(CanvasPanelHandler cph)
 	{
@@ -28,6 +40,15 @@ public class UseCase extends JPanel implements IFuncComponent, IClassPainter
 		this.setLocation(0, 0);
 		this.setOpaque(true);
 		this.cph = cph;
+		topLines = new ArrayList<IBasicLine>();
+		rightLines = new ArrayList<IBasicLine>();
+		leftLines = new ArrayList<IBasicLine>();
+		bottomLines = new ArrayList<IBasicLine>();
+		lines = new HashMap<Integer, ArrayList<IBasicLine>>();
+		lines.put(3, topLines);
+		lines.put(2, rightLines);
+		lines.put(1, leftLines);
+		lines.put(0, bottomLines);
 	}
 
 	@Override
@@ -103,5 +124,41 @@ public class UseCase extends JPanel implements IFuncComponent, IClassPainter
 		gra.fillRect(this.getWidth() - selectBoxSize,
 				this.getHeight() / 2 - selectBoxSize, selectBoxSize,
 				selectBoxSize * 2);
+	}
+	
+	public boolean isSelectPort(Point clickPoint) {
+		Point jpLocation = cph.getAbsLocation(this);
+//		if (x == jpLocation.x + this.getSize().getWidth() / 2
+//				&& y == jpLocation.y) {
+//			selectPort = 3;
+//			hasSelectPort = true;
+//			return true;
+//		} else if (x == jpLocation.x + getSize().getWidth()
+//				&& y == jpLocation.y + getSize().getHeight() / 2) {
+//			selectPort = 2;
+//			hasSelectPort = true;
+//			return true;
+//		} else if (x == jpLocation.x
+//				&& y == jpLocation.y + getSize().getHeight() / 2) {
+//			selectPort = 1;
+//			hasSelectPort = true;
+//			return true;
+//		} else if (x == jpLocation.x + getSize().getWidth() / 2
+//				&& y == jpLocation.y + getSize().getHeight()) {
+//			selectPort = 0;
+//			hasSelectPort = true;
+//			return true;
+//		}
+//		System.out.println("bbb");
+//		selectPort = -1;
+//		hasSelectPort = false;
+//		return false;
+		selectPort = new AreaDefine().getArea(this.getLocation(), this.getSize(), clickPoint);
+		if(selectPort != -1){
+			hasSelectPort = false;
+			return false;
+		}
+		hasSelectPort = true;
+		return true;
 	}
 }
