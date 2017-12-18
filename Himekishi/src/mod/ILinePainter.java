@@ -12,4 +12,8 @@ public interface ILinePainter
 	public void setConnect(DragPack dPack);
 
 	void paintSelect(Graphics gra);
+	
+	boolean isSelect();
+	
+	void setSelect(boolean isSelect);
 }

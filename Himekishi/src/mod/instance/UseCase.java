@@ -15,6 +15,7 @@ import Define.AreaDefine;
 import bgWork.handler.CanvasPanelHandler;
 import mod.IClassPainter;
 import mod.IFuncComponent;
+import mod.ILinePainter;;
 
 public class UseCase extends JPanel implements IFuncComponent, IClassPainter
 {
@@ -26,11 +27,11 @@ public class UseCase extends JPanel implements IFuncComponent, IClassPainter
 	CanvasPanelHandler	cph;
 	private int selectPort = -1;
 	private boolean hasSelectPort = false;
-	ArrayList<IBasicLine> topLines;
-	ArrayList<IBasicLine> rightLines;
-	ArrayList<IBasicLine> leftLines;
-	ArrayList<IBasicLine> bottomLines;
-	Map<Integer, ArrayList<IBasicLine>> lines;
+	ArrayList<ILinePainter> topLines;
+	ArrayList<ILinePainter> rightLines;
+	ArrayList<ILinePainter> leftLines;
+	ArrayList<ILinePainter> bottomLines;
+	Map<Integer, ArrayList<ILinePainter>> lines;
 
 	public UseCase(CanvasPanelHandler cph)
 	{
@@ -40,11 +41,11 @@ public class UseCase extends JPanel implements IFuncComponent, IClassPainter
 		this.setLocation(0, 0);
 		this.setOpaque(true);
 		this.cph = cph;
-		topLines = new ArrayList<IBasicLine>();
-		rightLines = new ArrayList<IBasicLine>();
-		leftLines = new ArrayList<IBasicLine>();
-		bottomLines = new ArrayList<IBasicLine>();
-		lines = new HashMap<Integer, ArrayList<IBasicLine>>();
+		topLines = new ArrayList<ILinePainter>();
+		rightLines = new ArrayList<ILinePainter>();
+		leftLines = new ArrayList<ILinePainter>();
+		bottomLines = new ArrayList<ILinePainter>();
+		lines = new HashMap<Integer, ArrayList<ILinePainter>>();
 		lines.put(3, topLines);
 		lines.put(2, rightLines);
 		lines.put(1, leftLines);
@@ -154,11 +155,37 @@ public class UseCase extends JPanel implements IFuncComponent, IClassPainter
 //		hasSelectPort = false;
 //		return false;
 		selectPort = new AreaDefine().getArea(this.getLocation(), this.getSize(), clickPoint);
+		refreshPortSelect();
+		System.out.println(selectPort);
 		if(selectPort != -1){
-			hasSelectPort = false;
-			return false;
+			ArrayList<ILinePainter> storeLine = lines.get(selectPort);
+			for (ILinePainter iLinePainter : storeLine) {
+				iLinePainter.setSelect(true);
+			}
+			hasSelectPort = true;
+			return true;
 		}
-		hasSelectPort = true;
-		return true;
+		hasSelectPort = false;
+		return false;
+	}
+
+	public void refreshPortSelect() {
+		for (Map.Entry<Integer, ArrayList<ILinePainter>> pair : lines.entrySet()) {
+			for (ILinePainter iLinePainter : pair.getValue()) {
+				iLinePainter.setSelect(false);
+			}
+		}
+	}
+	
+	@Override
+	public void storeLine(ILinePainter line, int side) {
+		if(side == 3)
+			topLines.add(line);
+		else if(side == 2)
+			rightLines.add(line);
+		else if (side == 1) 
+			leftLines.add(line);
+		else if (side == 0)
+			bottomLines.add(line);
 	}
 }

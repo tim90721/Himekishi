@@ -1,6 +1,7 @@
 package mod.instance;
 
 import java.awt.Color;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -16,6 +17,7 @@ import Define.AreaDefine;
 import bgWork.handler.CanvasPanelHandler;
 import mod.IClassPainter;
 import mod.IFuncComponent;
+import mod.ILinePainter;;
 
 public class BasicClass extends JPanel implements IFuncComponent, IClassPainter {
 	Vector<String> texts = new Vector<>();
@@ -27,11 +29,11 @@ public class BasicClass extends JPanel implements IFuncComponent, IClassPainter 
 	CanvasPanelHandler cph;
 	private boolean hasSelectPort = false;
 	int selectPort = -1;
-	ArrayList<IBasicLine> topLines;
-	ArrayList<IBasicLine> rightLines;
-	ArrayList<IBasicLine> leftLines;
-	ArrayList<IBasicLine> bottomLines;
-	Map<Integer, ArrayList<IBasicLine>> lines;
+	ArrayList<ILinePainter> topLines;
+	ArrayList<ILinePainter> rightLines;
+	ArrayList<ILinePainter> leftLines;
+	ArrayList<ILinePainter> bottomLines;
+	Map<Integer, ArrayList<ILinePainter>> lines;
 
 	public BasicClass(CanvasPanelHandler cph) {
 		texts.add("New Class");
@@ -41,11 +43,11 @@ public class BasicClass extends JPanel implements IFuncComponent, IClassPainter 
 		this.setLocation(0, 0);
 		this.setOpaque(true);
 		this.cph = cph;
-		topLines = new ArrayList<IBasicLine>();
-		rightLines = new ArrayList<IBasicLine>();
-		leftLines = new ArrayList<IBasicLine>();
-		bottomLines = new ArrayList<IBasicLine>();
-		lines = new HashMap<Integer, ArrayList<IBasicLine>>();
+		topLines = new ArrayList<ILinePainter>();
+		rightLines = new ArrayList<ILinePainter>();
+		leftLines = new ArrayList<ILinePainter>();
+		bottomLines = new ArrayList<ILinePainter>();
+		lines = new HashMap<Integer, ArrayList<ILinePainter>>();
 		lines.put(3, topLines);
 		lines.put(2, rightLines);
 		lines.put(1, leftLines);
@@ -74,12 +76,13 @@ public class BasicClass extends JPanel implements IFuncComponent, IClassPainter 
 		if (isSelect == true) {
 			paintSelect(g);
 		}
-		if(hasSelectPort){
-			ArrayList<IBasicLine> selectLines = lines.get(selectPort);
-			for (IBasicLine iBasicLine : selectLines) {
-				iBasicLine.drawPort(g);
-			}
-		}
+//		if(hasSelectPort){
+//			ArrayList<ILinePainter> selectLines = lines.get(selectPort);
+//			for (ILinePainter ILinePainter : selectLines) {
+//				System.out.println(selectPort);
+//				ILinePainter.paintSelect(g);
+//			}
+//		}
 	}
 
 	@Override
@@ -164,15 +167,29 @@ public class BasicClass extends JPanel implements IFuncComponent, IClassPainter 
 //		hasSelectPort = false;
 //		return false;
 		selectPort = new AreaDefine().getArea(this.getLocation(), this.getSize(), clickPoint);
+		refreshPortSelect();
+		System.out.println(selectPort);
 		if(selectPort != -1){
-			hasSelectPort = false;
-			return false;
+			ArrayList<ILinePainter> storeLine = lines.get(selectPort);
+			for (ILinePainter iLinePainter : storeLine) {
+				iLinePainter.setSelect(true);
+			}
+			hasSelectPort = true;
+			return true;
 		}
-		hasSelectPort = true;
-		return true;
+		hasSelectPort = false;
+		return false;
 	}
 	
-	public void storeLine(IBasicLine line, int side){
+	public void refreshPortSelect() {
+		for (Map.Entry<Integer, ArrayList<ILinePainter>> pair : lines.entrySet()) {
+			for (ILinePainter iLinePainter : pair.getValue()) {
+				iLinePainter.setSelect(false);
+			}
+		}
+	}
+	
+	public void storeLine(ILinePainter line, int side){
 		if(side == 3)
 			topLines.add(line);
 		else if(side == 2)

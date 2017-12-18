@@ -110,9 +110,9 @@ public class CanvasPanelHandler extends PanelHandler
 	void selectByClick(MouseEvent e)
 	{
 		boolean isSelect = false;
-//		boolean isSelectPort = false;
 		Point clickPoint = new Point(e.getX(), e.getY());
 		selectComp = new Vector <>();
+		resetAllLine();
 		for (int i = 0; i < members.size(); i ++)
 		{
 			if (isInside(members.elementAt(i), e.getPoint()) == true
@@ -159,6 +159,20 @@ public class CanvasPanelHandler extends PanelHandler
 				setSelectAllType(members.elementAt(i), false);
 			}
 		}
+//		if(!isSelect) {
+//			for (int i = 0; i < members.size(); i++) {
+//				setSelectAllType(members.elementAt(i), false);
+//				switch (core.isFuncComponent(members.elementAt(i)))
+//				{
+//					case 0:
+//						((BasicClass) members.elementAt(i)).isSelectPort(clickPoint);
+//						break;
+//					case 1:
+//						((UseCase) members.elementAt(i)).isSelectPort(clickPoint);
+//						break;
+//				}
+//			}
+//		}
 		repaintComp();
 	}
 
@@ -228,6 +242,22 @@ public class CanvasPanelHandler extends PanelHandler
 			return true;
 		}
 		return false;
+	}
+	
+	private void resetAllLine() {
+		Point clickPoint = new Point(-1, -1);
+		for(int i = 0; i < members.size(); i++) {
+			switch (core.isFuncComponent(members.elementAt(i)))
+			{
+			case 0:
+				((BasicClass) members.elementAt(i)).isSelectPort(clickPoint);
+				System.out.println("ccc");
+				break;
+			case 1:
+				((UseCase) members.elementAt(i)).isSelectPort(clickPoint);
+				break;
+			}
+		}
 	}
 
 	public void setGroup()
@@ -322,6 +352,7 @@ public class CanvasPanelHandler extends PanelHandler
 			{
 				selectComp.add(members.elementAt(i));
 				setSelectAllType(members.elementAt(i), true);
+				resetAllLine();
 			}
 			else
 			{
@@ -343,6 +374,7 @@ public class CanvasPanelHandler extends PanelHandler
 			{
 				selectComp.add(members.elementAt(i));
 				setSelectAllType(members.elementAt(i), true);
+				resetAllLine();
 			}
 			else
 			{

@@ -10,12 +10,13 @@ import javax.swing.JPanel;
 import Define.AreaDefine;
 import Pack.DragPack;
 import bgWork.handler.CanvasPanelHandler;
+import mod.IClassPainter;
 import mod.IFuncComponent;
 import mod.ILinePainter;
 import java.lang.Math;
 
 public class AssociationLine extends JPanel
-		implements IFuncComponent, ILinePainter, IBasicLine
+		implements IFuncComponent, ILinePainter
 {
 	JPanel				from;
 	int					fromSide;
@@ -91,6 +92,10 @@ public class AssociationLine extends JPanel
 			fp = getConnectPoint(from, fromSide);
 			tp = getConnectPoint(to, toSide);
 			this.reSize();
+			IClassPainter fromObj = (IClassPainter) from;
+			IClassPainter toObj = (IClassPainter) to;
+			fromObj.storeLine(this, fromSide);
+			toObj.storeLine(this, toSide);
 		}
 		catch (NullPointerException e)
 		{
@@ -140,9 +145,10 @@ public class AssociationLine extends JPanel
 				fp.y - this.getLocation().y);
 		tpPrime = new Point(tp.x - this.getLocation().x,
 				tp.y - this.getLocation().y);
-		gra.setColor(Color.BLACK);
+		gra.setColor(Color.RED);
 		gra.fillRect(fpPrime.x, fpPrime.y, selectBoxSize, selectBoxSize);
 		gra.fillRect(tpPrime.x, tpPrime.y, selectBoxSize, selectBoxSize);
+		gra.setColor(Color.BLACK);
 	}
 
 	public boolean isSelect()
@@ -153,10 +159,5 @@ public class AssociationLine extends JPanel
 	public void setSelect(boolean isSelect)
 	{
 		this.isSelect = isSelect;
-	}
-
-	@Override
-	public void drawPort(Graphics g) {
-		paintSelect(g);
 	}
 }
